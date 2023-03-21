@@ -11,6 +11,8 @@ class GoBoard:
         self.board = [[EMPTY for _ in range(size)] for _ in range(size)]
         self.current_player = BLACK
         self.previous_board = []
+        # self.white_score = 0
+        # self.black_score = 0
 
     def place_stone(self, row: int, col: int) -> bool:
         if self.board[row][col] != EMPTY:
@@ -122,8 +124,9 @@ def display_board(board: List[List[int]]):
 def main():
     size = int(input("Enter the board size: "))
     board = GoBoard(size)
+    consecutive_passes = 0
 
-    while True:
+    while consecutive_passes < 2:
         display_board(board.get_board())
         player = "Black" if board.current_player == BLACK else "White"
         print(f"{player}'s turn")
@@ -133,17 +136,17 @@ def main():
             print(f"{player} resigns")
             break
         elif move == "pass":
+            consecutive_passes += 1
             print(f"{player} passes")
             board.current_player = BLACK if board.current_player == WHITE else WHITE
         else:
+            consecutive_passes = 0
             row, col = move
             success = board.place_stone(row, col)
             if not success:
                 print("Invalid move")
             else:
                 print(f"{player} places a stone at ({chr(col+ord('a'))}, {size-row})")
-
-    display_board(board.get_board())
 
 
 def get_move(size: int) -> Union[str, Tuple[int, int]]:
